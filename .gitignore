@@ -1,2 +1,4 @@
 node_modules
-passenger.coffee.DS_Store
+passenger.coffee
+.DS_Store
+package-lock.json

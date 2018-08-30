@@ -38,7 +38,7 @@ addPassenger = (passenger) ->
   input = await page.$ 'div.row.h-ml--40.nomargin--below-tablet-vertical > div.col--4.col--stack-tablet-vertical.col--stack-mobile.h-mb--8 > div > div > div > div > input'
   await input.type passenger.phone
 
-  label = await page.$ 'label[for="passengersTermsAndConditions"]'
+  label = await page.$ 'label[for="passangersTermsAndConditions"]'
   await label.click()
 
   button = await page.$ 'div > div > div.meta__col--center > div > div:nth-child(3) > div.next > a'

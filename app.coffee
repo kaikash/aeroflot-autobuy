@@ -1,6 +1,7 @@
 puppeteer = require 'puppeteer'
 player = require('play-sound')(opts = {})
 IOSIF = require './passenger.coffee'
+sleep = require 'sleep-promise'
 
 page = null
 
@@ -24,6 +25,8 @@ addPassenger = (passenger) ->
   input = await page.$ 'div.wrapper > div > fieldset > div.row.h-mb--24.nomargin--below-tablet-vertical > div:nth-child(1) > div > div > input'
   await input.type passenger.bday
 
+  await page.waitFor 500
+
   input = await page.$ 'input[title="Номер"]'
   await input.focus()
   await input.type passenger.number
@@ -38,7 +41,7 @@ addPassenger = (passenger) ->
   input = await page.$ 'div.row.h-ml--40.nomargin--below-tablet-vertical > div.col--4.col--stack-tablet-vertical.col--stack-mobile.h-mb--8 > div > div > div > div > input'
   await input.type passenger.phone
 
-  label = await page.$ 'label[for="passengersTermsAndConditions"]'
+  label = await page.$ 'label[for="passangersTermsAndConditions"]'
   await label.click()
 
   button = await page.$ 'div > div > div.meta__col--center > div > div:nth-child(3) > div.next > a'
@@ -60,8 +63,8 @@ buy = (res) ->
   await button.focus()
   await button.press 'Enter'
 
-getMinPrice = ->
-  await page.goto 'https://www.aeroflot.ru/sb/app/ru-ru#/search?adults=1&cabin=econom&children=0&infants=0&referrer=null&routes=VVO.20181005.MOW&_k=dxl7r7'
+getMinPrice = (url) ->
+  await page.goto url
   
   await page.waitFor 'a.button.button--wide.button--lg'
   await page.click 'a.button.button--wide.button--lg'
@@ -83,12 +86,14 @@ getMinPrice = ->
     return
       minPrice: minPrice
       minPriceRes: minPriceRes
-  return null
+  return {}
 
 do -> 
   browser = await puppeteer.launch({headless: false})
   page = await browser.newPage()
-  
-  {minPrice, minPriceRes} = await getMinPrice()
+  while !minPrice
+    {minPrice, minPriceRes} = await getMinPrice 'https://www.aeroflot.ru/sb/app/ru-ru#/search?adults=1&cabin=econom&children=0&infants=0&referrer=null&routes=VVO.20180905.MOW&_k=dxl7r7'
+    unless minPrice 
+      await sleep 30000
   await buy minPriceRes
   await addPassenger IOSIF

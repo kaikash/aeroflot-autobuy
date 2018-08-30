@@ -91,7 +91,10 @@ getMinPrice = (url) ->
 do -> 
   browser = await puppeteer.launch({headless: false})
   page = await browser.newPage()
+  its = 0
   while !minPrice
+    console.clear()
+    console.log "currently at #{++its} iteratoin..."
     {minPrice, minPriceRes} = await getMinPrice 'https://www.aeroflot.ru/sb/app/ru-ru#/search?adults=1&cabin=econom&children=0&infants=0&referrer=null&routes=VVO.20180905.MOW&_k=dxl7r7'
     unless minPrice 
       await sleep 30000

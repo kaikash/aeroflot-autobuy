@@ -1,0 +1,9 @@
+module.exports = {
+  male: ''
+  surname: ''
+  name: ''
+  bday: ''
+  number: ''
+  email: ''
+  phone: ''
+}
